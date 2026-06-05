@@ -1,0 +1,21 @@
+services:
+  fire-enrich:
+    image: godwinxavier/fire-enrich:latest
+    restart: unless-stopped
+    environment:
+      - FIRECRAWL_API_KEY=${FIRECRAWL_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - FIRE_ENRICH_UNLIMITED=true
+      - NODE_ENV=production
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.fire-enrich.rule=Host(`fire-enrich.dynamixsolutions.org`)"
+      - "traefik.http.routers.fire-enrich.entrypoints=websecure"
+      - "traefik.http.routers.fire-enrich.tls.certresolver=letsencrypt"
+      - "traefik.http.services.fire-enrich.loadbalancer.server.port=3000"
+    networks:
+      - dokploy-network
+
+networks:
+  dokploy-network:
+    external: true
